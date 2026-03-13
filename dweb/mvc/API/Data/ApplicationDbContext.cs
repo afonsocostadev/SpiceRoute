@@ -10,7 +10,11 @@ public class ApplicationDbContext : IdentityDbContext
         : base(options)
     {
     }
-    
     public DbSet<Recipe> Recipes { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Course> Courses { get; set; }
+    public DbSet<MeasurementUnits> MeasurementUnits { get; set; }
+    public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
 }
 

@@ -4,6 +4,7 @@ using API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260313154900_Models")]
+    partial class Models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,24 +89,6 @@ namespace API.Migrations
                     b.ToTable("Ingredients");
                 });
 
-            modelBuilder.Entity("API.Models.MeasurementUnits", b =>
-                {
-                    b.Property<int>("UnitId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UnitId"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("nvarchar(15)");
-
-                    b.HasKey("UnitId");
-
-                    b.ToTable("MeasurementUnits");
-                });
-
             modelBuilder.Entity("API.Models.Recipe", b =>
                 {
                     b.Property<int>("RecipeId")
@@ -144,29 +129,6 @@ namespace API.Migrations
                     b.HasKey("RecipeId");
 
                     b.ToTable("Recipes");
-                });
-
-            modelBuilder.Entity("API.Models.RecipeIngredient", b =>
-                {
-                    b.Property<int>("RecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("UnitIdFk")
-                        .HasColumnType("int");
-
-                    b.HasKey("RecipeId", "IngredientId");
-
-                    b.HasIndex("IngredientId");
-
-                    b.HasIndex("UnitIdFk");
-
-                    b.ToTable("RecipeIngredients");
                 });
 
             modelBuilder.Entity("CategoryIngredient", b =>
@@ -248,11 +210,6 @@ namespace API.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(13)
-                        .HasColumnType("nvarchar(13)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -304,10 +261,6 @@ namespace API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -391,49 +344,6 @@ namespace API.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("RecipeUser", b =>
-                {
-                    b.Property<int>("RecipesRecipeId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("RecipesRecipeId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("RecipeUser");
-                });
-
-            modelBuilder.Entity("API.Models.User", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.HasDiscriminator().HasValue("User");
-                });
-
-            modelBuilder.Entity("API.Models.RecipeIngredient", b =>
-                {
-                    b.HasOne("API.Models.Ingredient", null)
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("IngredientId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Models.Recipe", null)
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("RecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Models.MeasurementUnits", "MeasurementUnit")
-                        .WithMany("RecipeIngredients")
-                        .HasForeignKey("UnitIdFk");
-
-                    b.Navigation("MeasurementUnit");
-                });
-
             modelBuilder.Entity("CategoryIngredient", b =>
                 {
                     b.HasOne("API.Models.Category", null)
@@ -498,36 +408,6 @@ namespace API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("RecipeUser", b =>
-                {
-                    b.HasOne("API.Models.Recipe", null)
-                        .WithMany()
-                        .HasForeignKey("RecipesRecipeId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("API.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("API.Models.Ingredient", b =>
-                {
-                    b.Navigation("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("API.Models.MeasurementUnits", b =>
-                {
-                    b.Navigation("RecipeIngredients");
-                });
-
-            modelBuilder.Entity("API.Models.Recipe", b =>
-                {
-                    b.Navigation("RecipeIngredients");
                 });
 #pragma warning restore 612, 618
         }
