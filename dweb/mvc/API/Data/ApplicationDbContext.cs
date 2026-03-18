@@ -4,7 +4,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Data;
-public class ApplicationDbContext : IdentityDbContext
+
+public class ApplicationDbContext : IdentityDbContext<User>
 {
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options)
@@ -16,5 +17,6 @@ public class ApplicationDbContext : IdentityDbContext
     public DbSet<Course> Courses { get; set; }
     public DbSet<MeasurementUnits> MeasurementUnits { get; set; }
     public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
+    public DbSet<User> Users { get; set; }
 }
 

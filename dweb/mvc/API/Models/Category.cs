@@ -17,6 +17,7 @@ public class Category
     [StringLength(20)]
     public string Details { get; set; } = string.Empty;
     
-    public List<Ingredient> Ingredients { get; set; } = [];
+    
+    public List<Ingredient>? Ingredients { get; set; } = [];
     
 }

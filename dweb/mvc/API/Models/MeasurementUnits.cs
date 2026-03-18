@@ -12,5 +12,5 @@ public class MeasurementUnits
     [StringLength(15)]
     public string Name { get; set; } = string.Empty;
     
-    public List<RecipeIngredient> RecipeIngredients { get; set; } = [];
+    public List<RecipeIngredient>? RecipeIngredients { get; set; } = [];
 }

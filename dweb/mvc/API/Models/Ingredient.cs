@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace API.Models;
 
@@ -17,6 +18,8 @@ public class Ingredient
     [StringLength(500)]
     public string Description { get; set; } = string.Empty;
     
+    [JsonIgnore]
     public List<Category> Categories { get; set; } = [];
+    
     public List<RecipeIngredient> RecipeIngredients { get; set; } = [];
 }
