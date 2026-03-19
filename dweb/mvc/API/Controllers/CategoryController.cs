@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Models;
+using API.Models.DTOs;
 
 namespace API.Controllers
 {
@@ -23,14 +24,25 @@ namespace API.Controllers
 
         // GET: api/Category
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
         {
-            return await _context.Categories.ToListAsync();
+            var categoryList = new List<CategoryDTO>();
+            
+            var categories = await _context.Categories.ToListAsync();
+            foreach (var category in categories)
+            {
+                categoryList.Add( new CategoryDTO()
+                {
+                    Name = category.Name
+                });
+            }
+
+            return categoryList;
         }
 
         // GET: api/Category/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
         {
             var category = await _context.Categories.FindAsync(id);
             
@@ -39,20 +51,34 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return category;
+            var categoryName = new CategoryDTO
+            {
+                CategoryId =  category.CategoryId,
+                Name = category.Name
+            };
+                    
+            
+            return categoryName;
         }
 
         // PUT: api/Category/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        public async Task<IActionResult> PutCategory(int id, CategoryDTO category)
         {
+            
             if (id != category.CategoryId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(category).State = EntityState.Modified;
+            var categoryChanged = new Category()
+            {
+                CategoryId = category.CategoryId,
+                Name = category.Name
+            };
+
+            _context.Entry(categoryChanged).State = EntityState.Modified;
 
             try
             {
@@ -76,17 +102,18 @@ namespace API.Controllers
         // POST: api/Category
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+        public async Task<ActionResult<Category>> PostCategory(CategoryDTO category)
         {
-            var categoryExists = await _context.Categories.FirstOrDefaultAsync(c => c.Equals(category.Name));
+            var categoryExists = await _context.Categories.FirstOrDefaultAsync(c => c.Name.Equals(category.Name));
             if (categoryExists != null)
             {
                 return BadRequest("This category already exists");
             }
-            _context.Categories.Add(category);
+            var newCategory = new Category() { Name = category.Name };
+            _context.Categories.Add(newCategory);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
+            return CreatedAtAction("GetCategory", new { id = newCategory.CategoryId }, category);
         }
 
         // DELETE: api/Category/5

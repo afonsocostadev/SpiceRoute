@@ -26,7 +26,7 @@ public class Recipe
     /// </summary>
     [StringLength(100)]
     public string Description { get; set; } = string.Empty;
-    public DateTime Published { get; set; }
+    public DateTime Published { get; set; } = DateTime.Now;
     
     /// <summary>
     /// The actual recipe guide

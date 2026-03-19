@@ -14,10 +14,6 @@ public class Category
     [StringLength(20)]
     public string Name { get; set; } = string.Empty;
     
-    [StringLength(20)]
-    public string Details { get; set; } = string.Empty;
-    
-    
     public List<Ingredient>? Ingredients { get; set; } = [];
     
 }

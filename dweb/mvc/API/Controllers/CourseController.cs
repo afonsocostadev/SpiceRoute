@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Models;
+using API.Models.DTOs;
 
 namespace API.Controllers
 {
@@ -23,14 +24,25 @@ namespace API.Controllers
 
         // GET: api/Course
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
+        public async Task<ActionResult<IEnumerable<CourseDTO>>> GetCourses()
         {
-            return await _context.Courses.ToListAsync();
+            var courseList = new List<CourseDTO>();
+            var courses = await _context.Courses.ToListAsync();
+            foreach (var course in courses)
+            {
+                courseList.Add(new CourseDTO
+                    {
+                        Name = course.Name,
+                    }
+                );
+            }
+
+            return courseList;
         }
 
         // GET: api/Course/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Course>> GetCourse(int id)
+        public async Task<ActionResult<CourseDTO>> GetCourse(int id)
         {
             var course = await _context.Courses.FindAsync(id);
 
@@ -39,20 +51,32 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return course;
+            var courseName = new CourseDTO()
+            {
+                CourseId = course.CourseId,
+                Name = course.Name
+            };
+
+            return courseName;
         }
 
         // PUT: api/Course/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCourse(int id, Course course)
+        public async Task<IActionResult> PutCourse(int id, CourseDTO course)
         {
             if (id != course.CourseId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(course).State = EntityState.Modified;
+            var courseChanged = new Course()
+            {
+                CourseId = course.CourseId,
+                Name = course.Name
+            };
+
+            _context.Entry(courseChanged).State = EntityState.Modified;
 
             try
             {
@@ -76,9 +100,20 @@ namespace API.Controllers
         // POST: api/Course
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Course>> PostCourse(Course course)
+        public async Task<ActionResult<Course>> PostCourse(CourseDTO course)
         {
-            _context.Courses.Add(course);
+            var courseExists = await _context.Courses.FirstOrDefaultAsync(c => c.Name.Equals(course.Name));
+            if (courseExists != null)
+            {
+                return BadRequest("This course already exists");
+            }
+
+            var newCourse = new Course()
+            {
+                Name = course.Name
+            };
+            
+            _context.Courses.Add(newCourse);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCourse", new { id = course.CourseId }, course);

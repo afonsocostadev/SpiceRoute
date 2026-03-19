@@ -1,7 +1,8 @@
 namespace API.Models.DTOs;
 
-public class CategoryDTO
+public class CourseDTO
 {
-    public int CategoryId { get; set; }
+    public int CourseId { get; set; }
     public string Name { get; set; } = string.Empty;
+    
 }
