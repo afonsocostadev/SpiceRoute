@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Models;
+using API.Models.DTOs;
 
 namespace API.Controllers
 {
@@ -23,14 +24,25 @@ namespace API.Controllers
 
         // GET: api/MeasurementUnits
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MeasurementUnits>>> GetMeasurementUnits()
+        public async Task<ActionResult<IEnumerable<MeasurementUnitsDTO>>> GetMeasurementUnits()
         {
-            return await _context.MeasurementUnits.ToListAsync();
+            var unitList = new  List<MeasurementUnitsDTO>();
+            var units = await _context.MeasurementUnits.ToListAsync();
+            foreach (var unit in units)
+            {
+                unitList.Add(new MeasurementUnitsDTO()
+                {
+                    UnitId = unit.UnitId,
+                    Name = unit.Name
+                });
+            }
+
+            return unitList;
         }
 
         // GET: api/MeasurementUnits/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<MeasurementUnits>> GetMeasurementUnits(int id)
+        public async Task<ActionResult<MeasurementUnitsDTO>> GetMeasurementUnits(int id)
         {
             var measurementUnits = await _context.MeasurementUnits.FindAsync(id);
 
@@ -39,20 +51,32 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return measurementUnits;
+            var unitName = new MeasurementUnitsDTO()
+            {
+                UnitId = measurementUnits.UnitId,
+                Name = measurementUnits.Name
+            };
+
+            return unitName;
         }
 
         // PUT: api/MeasurementUnits/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMeasurementUnits(int id, MeasurementUnits measurementUnits)
+        public async Task<IActionResult> PutMeasurementUnits(int id, MeasurementUnitsDTO measurementUnits)
         {
             if (id != measurementUnits.UnitId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(measurementUnits).State = EntityState.Modified;
+            var unitChanged = new MeasurementUnits()
+            {
+                UnitId = measurementUnits.UnitId,
+                Name = measurementUnits.Name
+            };
+            
+            _context.Entry(unitChanged).State = EntityState.Modified;
 
             try
             {
@@ -76,9 +100,20 @@ namespace API.Controllers
         // POST: api/MeasurementUnits
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MeasurementUnits>> PostMeasurementUnits(MeasurementUnits measurementUnits)
+        public async Task<ActionResult<MeasurementUnits>> PostMeasurementUnits(MeasurementUnitsDTO measurementUnits)
         {
-            _context.MeasurementUnits.Add(measurementUnits);
+            var unitExists = await _context.MeasurementUnits.FirstOrDefaultAsync(e => e.Name == measurementUnits.Name);
+            if (unitExists != null)
+            {
+                return BadRequest("This unit already exists");
+            }
+
+            var newUnit = new MeasurementUnits()
+            {
+                Name = measurementUnits.Name
+            };
+            
+            _context.MeasurementUnits.Add(newUnit);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetMeasurementUnits", new { id = measurementUnits.UnitId }, measurementUnits);

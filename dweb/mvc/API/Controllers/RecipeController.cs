@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Models;
+using API.Models.DTOs;
 
 namespace API.Controllers
 {
@@ -23,14 +24,30 @@ namespace API.Controllers
 
         // GET: api/Recipe
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+        public async Task<ActionResult<IEnumerable<RecipeDTO>>> GetRecipes()
         {
-            return await _context.Recipes.ToListAsync();
+            var recipeList = new List<RecipeDTO>();
+            var recipes = await _context.Recipes.ToListAsync();
+            foreach (var recipe in recipes)
+            {
+                recipeList.Add(new RecipeDTO()
+                {
+                    RecipeId = recipe.RecipeId,
+                    Name = recipe.Name,
+                    Description = recipe.Description,
+                    Portions = recipe.Portions,
+                    CookingTime = recipe.CookingTime,
+                    PrepTime = recipe.PrepTime,
+                    Preparation =  recipe.Preparation,
+                });
+            }
+
+            return recipeList;
         }
 
         // GET: api/Recipe/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Recipe>> GetRecipe(int id)
+        public async Task<ActionResult<RecipeDTO>> GetRecipe(int id)
         {
             var recipe = await _context.Recipes.FindAsync(id);
 
@@ -39,20 +56,42 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return recipe;
+            var recipeName = new RecipeDTO()
+            {
+                RecipeId = recipe.RecipeId,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                Portions = recipe.Portions,
+                CookingTime = recipe.CookingTime,
+                Preparation = recipe.Preparation,
+                PrepTime = recipe.PrepTime,
+            };
+
+            return recipeName;
         }
 
         // PUT: api/Recipe/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRecipe(int id, Recipe recipe)
+        public async Task<IActionResult> PutRecipe(int id, RecipeDTO recipe)
         {
             if (id != recipe.RecipeId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(recipe).State = EntityState.Modified;
+            var recipeChanged = new Recipe()
+            {
+                RecipeId = recipe.RecipeId,
+                Name = recipe.Name,
+                Description = recipe.Description,
+                Portions = recipe.Portions,
+                CookingTime = recipe.CookingTime,
+                Preparation = recipe.Preparation,
+                PrepTime = recipe.PrepTime,
+            };
+
+            _context.Entry(recipeChanged).State = EntityState.Modified;
 
             try
             {
@@ -76,9 +115,25 @@ namespace API.Controllers
         // POST: api/Recipe
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Recipe>> PostRecipe(Recipe recipe)
+        public async Task<ActionResult<Recipe>> PostRecipe(RecipeDTO recipe)
         {
-            _context.Recipes.Add(recipe);
+            var recipeExists = await _context.Recipes.FirstOrDefaultAsync(e => e.Name == recipe.Name);
+            if (recipeExists != null)
+            {
+                return BadRequest("This recipe already exists");
+            }
+
+            var newRecipe = new Recipe()
+            {
+                Name = recipe.Name,
+                Description = recipe.Description,
+                Portions = recipe.Portions,
+                CookingTime = recipe.CookingTime,
+                Preparation = recipe.Preparation,
+                PrepTime = recipe.PrepTime,
+            };
+            
+            _context.Recipes.Add(newRecipe);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetRecipe", new { id = recipe.RecipeId }, recipe);

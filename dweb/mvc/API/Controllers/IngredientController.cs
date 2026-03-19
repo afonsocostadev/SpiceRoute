@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using API.Data;
 using API.Models;
+using API.Models.DTOs;
 
 namespace API.Controllers
 {
@@ -23,14 +24,27 @@ namespace API.Controllers
 
         // GET: api/Ingredient
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ingredient>>> GetIngredients()
+        public async Task<ActionResult<IEnumerable<IngredientDTO>>> GetIngredients()
         {
-            return await _context.Ingredients.ToListAsync();
+            var ingredientList = new List<IngredientDTO>();
+            var ingredients = await _context.Ingredients.ToListAsync();
+
+            foreach (var ingredient in ingredients)
+            {
+                ingredientList.Add(new IngredientDTO()
+                {
+                    IngredientId = ingredient.IngredientId,
+                    Name = ingredient.Name,
+                    Description = ingredient.Description
+                });
+            }
+
+            return ingredientList;
         }
 
         // GET: api/Ingredient/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ingredient>> GetIngredient(int id)
+        public async Task<ActionResult<IngredientDTO>> GetIngredient(int id)
         {
             var ingredient = await _context.Ingredients.FindAsync(id);
 
@@ -39,20 +53,34 @@ namespace API.Controllers
                 return NotFound();
             }
 
-            return ingredient;
+            var ingredientName = new IngredientDTO()
+            {
+                IngredientId = ingredient.IngredientId,
+                Name = ingredient.Name,
+                Description = ingredient.Description
+            };
+
+            return ingredientName;
         }
 
         // PUT: api/Ingredient/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutIngredient(int id, Ingredient ingredient)
+        public async Task<IActionResult> PutIngredient(int id, IngredientDTO ingredient)
         {
             if (id != ingredient.IngredientId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(ingredient).State = EntityState.Modified;
+            var ingredientChanged = new Ingredient()
+            {
+                IngredientId = ingredient.IngredientId,
+                Name = ingredient.Name,
+                Description = ingredient.Description
+            };
+
+            _context.Entry(ingredientChanged).State = EntityState.Modified;
 
             try
             {
@@ -76,9 +104,21 @@ namespace API.Controllers
         // POST: api/Ingredient
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Ingredient>> PostIngredient(Ingredient ingredient)
+        public async Task<ActionResult<Ingredient>> PostIngredient(IngredientDTO ingredient)
         {
-            _context.Ingredients.Add(ingredient);
+            var ingredientExists = await _context.Ingredients.FirstOrDefaultAsync(i => i.Name == ingredient.Name);
+            if (ingredientExists != null)
+            {
+                return BadRequest("This ingredient already exists");
+            }
+
+            var newIngredient = new Ingredient()
+            {
+                Name = ingredient.Name,
+                Description = ingredient.Description
+            };
+            
+            _context.Ingredients.Add(newIngredient);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetIngredient", new { id = ingredient.IngredientId }, ingredient);
