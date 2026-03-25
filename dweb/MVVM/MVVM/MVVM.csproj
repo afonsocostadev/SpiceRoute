@@ -71,12 +71,18 @@
 
     <ItemGroup>
       <Folder Include="tools\" />
+      <Folder Include="wwwroot\css\" />
     </ItemGroup>
 
     <Target Name="Tailwind" BeforeTargets="Build">
-        <Exec Command="./tools/tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css" />
+        <Exec Command="npx tailwindcss -i ./style.css -o ./wwwroot/css/output.css" />
     </Target>
-
     
+    <ItemGroup>
+      <Content Update="style.css">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
 
 </Project>
