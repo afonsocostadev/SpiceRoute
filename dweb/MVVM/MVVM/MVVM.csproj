@@ -1,0 +1,82 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UserSecretsId>aspnet-MVVM-7a4ef92e-9847-47ca-8313-ffcca9a26dd8</UserSecretsId>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Update="app.db" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.5" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.3"/>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="10.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
+      <_ContentIncludedByDefault Remove="wwwroot\lib\bootstrap\LICENSE" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="tools\" />
+    </ItemGroup>
+
+    <Target Name="Tailwind" BeforeTargets="Build">
+        <Exec Command="./tools/tailwindcss -i ./wwwroot/css/site.css -o ./wwwroot/css/output.css" />
+    </Target>
+
+    
+
+</Project>
